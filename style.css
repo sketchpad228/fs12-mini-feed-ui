@@ -1,0 +1,39 @@
+/*
+	? Selectors
+	Element - elements selectors have no prefix
+	ID = #
+	Class = .
+
+*/
+
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+	--color-secondary-gray: #5b5b5b;
+	--gap-primary: 1.5em;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.j-center {
+    justify-content: center;
+}
+
+.nav-links {
+    text-decoration: none;
+}
+
+/* Emphasizing class and ID differences - order of specificity, uniqueness */
+
+#forms::before {
+    content: "x";
+}
+
+/* .nav-links:last-child::before {
+    content: "x";
+} */
+
+/* End of Emphasizing class and ID differences */
