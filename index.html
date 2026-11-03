@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+	<!-- <link rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <title>Project - Mini Feed UI</title>
 </head>
 <body>
@@ -14,34 +20,52 @@
         <a href="" class="nav-links" id="forms">Forms</a>
     </nav>
     <main class="main-container">
-        <ul class="todo-list">
-            <li class="todo-item">Learn DOM</li>
-            <li class="todo-item">Learn DOM</li>
-            <li class="todo-item">Learn DOM</li>
-        </ul>
-        <div class="input-wrapper">
-            <input type="text" name="input" id="input" class="input" placeholder="Enter item">
-            <button type="button" class="addBtn">Add</button>
-            <!-- <button type="button" class="addBtn">Like</button> -->
-            <h2 class="output"></h2>
-        </div>
+		<div class="input-wrapper">
+			<input type="text" name="input" id="input" class="input" placeholder="Enter item">
+			<button type="button" class="addBtn">Add</button>
+			<h2 class="output"></h2>
+		</div>
+		<hr>
 		<form action="" class="auth-form" method="get">
-			<input type="text" name="fullName" id="fullName" placeholder="Enter name">
+		<!-- <form action="" class="auth-form" method="get" onsubmit="return false"> -->
+			<input type="text" name="fullName" id="fullName" placeholder="Enter name" style="display: none;">
 			<input type="email" name="email" id="email" placeholder="Enter email">
 			<input type="password" name="password" id="password" placeholder="Enter password">
-			<button>Login</button>
-			<button type="button" class="toggle" style="display: none">Register</button>
+			<button class="loginBtn">Login</button>
+			<button type="button" class="toggle">Register</button>
 		</form>
-    </main>
+		<div id="post-list" class="todo">
+			<h3></h3>
+		</div>
+		<form action="" class="form-container" role="search">
+			<label for="service-search">Search services</label>
+			<div class="search-control">
+				<input id="service-search" name="search" type="search" placeholder="Search by service or incident" autocomplete="off">
+				<button type="reset">Clear</button>
+			</div>
+			<p id="result-count" class="result-count" aria-live="polite">Loading services…</p>
+		</form>
+		<ul class="todo-list">
+			<li class="todo-item">
+				<div class="todo-item">
+                	<p class="skill-summary">Learn DOM</p>
+            	</div>
+			</li>
+			<li class="todo-item">drop off car</li>
+			<li class="todo-item">get a haircut</li>
+			<li class="todo-item">Learn DOM again</li>
+		</ul>
+		<h2 class="nameOfPoster"></h2>
+		
+	</main>
     <footer class="footer-container">
         <ol>
-        <li>Post</li>
-        <li>Like</li>
-        <li>Sort</li>
-        <li>Search</li>
-    </ol>
+            <li>Post</li>
+            <li>Like</li>
+            <li>Sort</li>
+            <li>Search</li>
+        </ol>
     </footer>
-    
     <script src="project2.js"></script>
 </body>
 </html>
