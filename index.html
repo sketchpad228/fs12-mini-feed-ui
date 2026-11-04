@@ -20,6 +20,14 @@
         <a href="" class="nav-links" id="forms">Forms</a>
     </nav>
     <main class="main-container">
+		<form action="" class="form-container" role="search">
+			<label for="service-search">Search services</label>
+			<div class="search-control">
+				<input id="service-search" name="search" type="search" placeholder="Search by service or incident" autocomplete="off">
+				<button type="reset">Clear</button>
+			</div>
+			<p id="result-count" class="result-count" aria-live="polite">Loading services…</p>
+		</form>
 		<div class="input-wrapper">
 			<input type="text" name="input" id="input" class="input" placeholder="Enter item">
 			<button type="button" class="addBtn">Add</button>
@@ -37,26 +45,6 @@
 		<div id="post-list" class="todo">
 			<h3></h3>
 		</div>
-		<form action="" class="form-container" role="search">
-			<label for="service-search">Search services</label>
-			<div class="search-control">
-				<input id="service-search" name="search" type="search" placeholder="Search by service or incident" autocomplete="off">
-				<button type="reset">Clear</button>
-			</div>
-			<p id="result-count" class="result-count" aria-live="polite">Loading services…</p>
-		</form>
-		<ul class="todo-list">
-			<li class="todo-item">
-				<div class="todo-item">
-                	<p class="skill-summary">Learn DOM</p>
-            	</div>
-			</li>
-			<li class="todo-item">drop off car</li>
-			<li class="todo-item">get a haircut</li>
-			<li class="todo-item">Learn DOM again</li>
-		</ul>
-		<h2 class="nameOfPoster"></h2>
-		
 	</main>
     <footer class="footer-container">
         <ol>
