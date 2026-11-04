@@ -111,12 +111,6 @@ let htmlCollection = document.getElementsByClassName("todo-item");
 let nodeList = document.querySelectorAll(".todo-item");
 // ? will update actively but only if it's AFTER all dynamically created elements
 
-let li = document.createElement("li")
-li.textContent = "buy groceries"
-li.classList.add("todo-item")
-console.dir(li)
-toDoList.appendChild(li)
-
 // ? HTMLCollection picks up dynamically created element; NodeList doesn't
 console.log(htmlCollection, htmlCollection.length, nodeList, nodeList.length);
 
@@ -153,8 +147,6 @@ let nameOfPoster = document.querySelector(".nameOfPoster")
 // 		toDoList.appendChild(li);
 // 		input.value = "";
 // })
-
-
 
 let params = new URLSearchParams(document.location.search)
 
@@ -207,7 +199,10 @@ function findUserByEmail(email) {
 	return db.find(usr => usr.email.trim().toLowerCase() === email);
 }
 
+let currentUser = null
+
 function login(evt) {
+
 	let email = validateEmail(evt.target.form[1].value);
 	let password = validatePassword(evt.target.form[2].value);
 	console.log(email, password);
@@ -223,7 +218,8 @@ function login(evt) {
 		return;
 	}
 
-	output.textContent = "Logged in";
+	currentUser = user.fullName
+	output.textContent = `Logged in as ${user.fullName}`;
 
 	// for (let i = 0; i < postFeed.length; i++) {
     // 	console.log(postFeed[i]);
@@ -343,7 +339,6 @@ function getFeed() {
 
 function createPost(username, content)
 {
-	// newPost();
     let newPost = {
         id: currentPostId,
         username: username,
@@ -363,109 +358,90 @@ function createPost(username, content)
 
 	postList.innerHTML = ""; // Prevents the previous post from duplicating
 
-	postFeed.forEach(service => {
+	postFeed.forEach(post => {
 		const card = document.createElement("article")
 		card.className = "card"
-		card.dataset.searchText = [service.id, service.description, service.updatedAt]
-			.concat(service.recentIncidentBriefs?.map(issue => `${issue.impz} ${issue.name}`) || [])
+		card.dataset.searchText = [post.id, post.username, post.content, post.timestamp]
 			.join(" ").toLowerCase()
 
 		const name = document.createElement("h3")
-		name.textContent = service.id || "Unnamed service"
+		name.textContent = post.username || "Unnamed service"
 
-		const description = document.createElement("p")
-		description.className = "card-description"
-		description.textContent = service.description || "No description available."
+		const contents = document.createElement("p")
+		contents.className = "contents"
+		contents.textContent = post.content || "No content."
 
 		const metadata = document.createElement("dl")
 		metadata.className = "card-meta"
 		const updatedLabel = document.createElement("dt")
-		updatedLabel.textContent = "Last updated"
+		updatedLabel.textContent = "Posted"
 		const updatedValue = document.createElement("dd")
 		const updatedTime = document.createElement("time")
-		updatedTime.dateTime = service.updatedAt || ""
-		updatedTime.textContent = formatDate(service.updatedAt)
+		updatedTime.dateTime = new Date(post.timestamp).toISOString()
+		updatedTime.textContent = formatDate(post.timestamp)
 		updatedValue.append(updatedTime)
 		metadata.append(updatedLabel, updatedValue)
 
-		card.append(name, description, metadata)
-
-		const incidents = Array.isArray(service.recentIncidentBriefs) ? service.recentIncidentBriefs : []
-		if (incidents.length) {
-			const incidentSection = document.createElement("section")
-			incidentSection.className = "incidents"
-			incidentSection.setAttribute("aria-label", "Recent incidents")
-			const incidentHeading = document.createElement("h4")
-			incidentHeading.className = "incidents-heading"
-			incidentHeading.textContent = "Recent incidents"
-			const incidentList = document.createElement("ul")
-			incidents.forEach(issue => {
-				const item = document.createElement("li")
-				item.textContent = `${issue.impact || "Unknown impact"}: ${issue.name || "Unnamed incident"}`
-				incidentList.append(item)
-			})
-			incidentSection.append(incidentHeading, incidentList)
-			card.append(incidentSection)
-		}
+		card.append(name, content, metadata)
 		postList.append(card)
 	})
 
 }
 
-const render = data => {
-	postList.replaceChildren()
-	const posts = Array.isArray(data) ? data : []
+// const render = data => {
+// 	postList.replaceChildren()
+// 	const posts = Array.isArray(data) ? data : []
 
-	posts.forEach(service => {
-		const card = document.createElement("article")
-		card.className = "card"
-		card.dataset.searchText = [service.id, service.description, service.updatedAt]
-			.concat(service.recentIncidentBriefs?.map(issue => `${issue.impact} ${issue.name}`) || [])
-			.join(" ").toLowerCase()
+// 	posts.forEach(service => {
+// 		const card = document.createElement("article")
+// 		card.className = "card"
+// 		card.dataset.searchText = [service.id, service.description, service.updatedAt]
+// 			.concat(service.recentIncidentBriefs?.map(issue => `${issue.impact} ${issue.name}`) || [])
+// 			.join(" ").toLowerCase()
 
-		const name = document.createElement("h3")
-		name.textContent = service.id || "Unnamed service"
+// 		const name = document.createElement("h3")
+// 		name.textContent = service.id || "Unnamed service"
 
-		const description = document.createElement("p")
-		description.className = "card-description"
-		description.textContent = service.description || "No description available."
+// 		const description = document.createElement("p")
+// 		description.className = "card-description"
+// 		description.textContent = service.description || "No description available."
 
-		const metadata = document.createElement("dl")
-		metadata.className = "card-meta"
-		const updatedLabel = document.createElement("dt")
-		updatedLabel.textContent = "Last updated"
-		const updatedValue = document.createElement("dd")
-		const updatedTime = document.createElement("time")
-		updatedTime.dateTime = service.updatedAt || ""
-		updatedTime.textContent = formatDate(service.updatedAt)
-		updatedValue.append(updatedTime)
-		metadata.append(updatedLabel, updatedValue)
+// 		const metadata = document.createElement("dl")
+// 		metadata.className = "card-meta"
+// 		const updatedLabel = document.createElement("dt")
+// 		updatedLabel.textContent = "Last updated"
+// 		const updatedValue = document.createElement("dd")
+// 		const updatedTime = document.createElement("time")
+// 		updatedTime.dateTime = service.updatedAt || ""
+// 		updatedTime.textContent = formatDate(service.updatedAt)
+// 		updatedValue.append(updatedTime)
+// 		metadata.append(updatedLabel, updatedValue)
 
-		card.append(name, description, metadata)
+// 		card.append(name, description, metadata)
 
-		const incidents = Array.isArray(service.recentIncidentBriefs) ? service.recentIncidentBriefs : []
-		if (incidents.length) {
-			const incidentSection = document.createElement("section")
-			incidentSection.className = "incidents"
-			incidentSection.setAttribute("aria-label", "Recent incidents")
-			const incidentHeading = document.createElement("h4")
-			incidentHeading.className = "incidents-heading"
-			incidentHeading.textContent = "Recent incidents"
-			const incidentList = document.createElement("ul")
-			incidents.forEach(issue => {
-				const item = document.createElement("li")
-				item.textContent = `${issue.impact || "Unknown impact"}: ${issue.name || "Unnamed incident"}`
-				incidentList.append(item)
-			})
-			incidentSection.append(incidentHeading, incidentList)
-			card.append(incidentSection)
-		}
-		postList.append(card)
-	})
+// 		const incidents = Array.isArray(service.recentIncidentBriefs) ? service.recentIncidentBriefs : []
+// 		if (incidents.length) {
+// 			const incidentSection = document.createElement("section")
+// 			incidentSection.className = "incidents"
+// 			incidentSection.setAttribute("aria-label", "Recent incidents")
+// 			const incidentHeading = document.createElement("h4")
+// 			incidentHeading.className = "incidents-heading"
+// 			incidentHeading.textContent = "Recent incidents"
+// 			const incidentList = document.createElement("ul")
+// 			incidents.forEach(issue => {
+// 				const item = document.createElement("li")
+// 				item.textContent = `${issue.impact || "Unknown impact"}: ${issue.name || "Unnamed incident"}`
+// 				incidentList.append(item)
+// 			})
+// 			incidentSection.append(incidentHeading, incidentList)
+// 			card.append(incidentSection)
+// 		}
+// 		postList.append(card)
+// 	})
 
-	setStatus(posts.length ? "" : "No services are currently available.", !posts.length)
-	updateResults()
-}
+// 	setStatus(posts.length ? "" : "No services are currently available.", !posts.length)
+// 	updateResults()
+// }
 
 const updateResults = () => {
 	const term = search.value.trim().toLowerCase()
@@ -485,19 +461,19 @@ const updateResults = () => {
 
 
 
-const getData = async endpoint => {
-	try {
-		const response = await fetch(endpoint)
-		if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
-		const data = await response.json()
-		render(data.posts)
-	} catch (error) {
-		console.error(error)
-		postList.replaceChildren()
-		resultCount.textContent = "Services could not be loaded."
-		setStatus("We couldn't load service status right now. Please try again later.")
-	}
-}
+// const getData = async endpoint => {
+// 	try {
+// 		const response = await fetch(endpoint)
+// 		if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
+// 		const data = await response.json()
+// 		render(data.posts)
+// 	} catch (error) {
+// 		console.error(error)
+// 		postList.replaceChildren()
+// 		resultCount.textContent = "Services could not be loaded."
+// 		setStatus("We couldn't load service status right now. Please try again later.")
+// 	}
+// }
 
 // getData(postFeed[0])
 
@@ -525,29 +501,10 @@ search.form.addEventListener("reset", () => requestAnimationFrame(updateResults)
 //
 
 let addItem = () => {
-		// createPost(fullName, input.value);
-		let li = document.createElement("li");
-		
-		const card = document.createElement("card")
-		card.className = "card"
-		const name = document.createElement("h3")
-
-		// for (let i = 0; i < db.length; i++) {
-			
-       	// 	name.textContent = db[i].fullName || "Unnamed service"
-    	// }
-		
-		name.textContent = db.fullName 
-
-		li.className = "todo-item";
-		li.textContent = input.value;
-		createPost(name.textContent, input.value);
-		toDoList.appendChild(li);
-		input.value = "";
-		// nameOfPoster.textContent = fullName;
-		// for (let i = 0; i < postFeed.length; i++) {
-       	// 	postFeed[i].username = fullName;
-    	// }
+		const content = input.value.trim()
+		if (!content) return
+		createPost(currentUser || "Anonymous", content);
+		input.value = ""
 };
 
 addBtn.addEventListener("click", addItem);
