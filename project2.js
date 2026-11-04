@@ -1,6 +1,5 @@
 // -- DOM section ---
-const postList = document.querySelector("#post-list")
-const resultCount = document.querySelector("#result-count")
+console.log("Script loaded.")
 
 let currentPostId = 0;
 
@@ -16,24 +15,6 @@ console.log(window, navigation, navigator, history);
 
 // ? Accessing elements
 console.dir(document.body.childNodes[1].textContent)
-
-const serviceList = document.querySelector("#service-list")
-const statusMessage = document.querySelector("#status-message")
-const emptyResults = document.querySelector("#empty-results")
-
-const setStatus = (message, visible = true) => {
-	statusMessage.textContent = message
-	statusMessage.hidden = !visible
-}
-
-const formatDate = value => {
-	if (!value) return "Date unavailable"
-	const date = new Date(value)
-	return Number.isNaN(date.getTime())
-		? String(value)
-		: date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
-}
-
 
 // ? Access elements using DOM methods
 
@@ -70,33 +51,25 @@ console.log(document.location.href)
 	? .querySelector()
 */
 
-let FormsUsingCompound = document.querySelector("body > #nav-bar .nav-links:nth-child(3)")
-console.log(FormsUsingCompound)
+const postList = document.querySelector("#post-list")
+const resultCount = document.querySelector("#result-count")
 
-/* 
-	? .querySelectorAll()
-*/
+const serviceList = document.querySelector("#service-list")
+const statusMessage = document.querySelector("#status-message")
+const emptyResults = document.querySelector("#empty-results")
 
-let navLinksUsingQSA = document.querySelectorAll(".nav-links");
-navLinksUsingQSA[0].accessKey = "This is testing the properties in the web console"
-console.log(navLinksUsingQSA);
+const setStatus = (message, visible = true) => {
+	statusMessage.textContent = message
+	statusMessage.hidden = !visible
+}
 
-// navLinksUsingQSA.forEach(l => console.dir(l));
-
-/* 
-	? Challenge
-	* use my loop on nav links
-	* modify all of them to display bold text
-*/
-
-// Easiest method, better in the sense that less is more
-navLinksUsingQSA.forEach(l => (l.style.fontWeight = "bold"));
-
-// More intuitive(?) method
-// navLinksUsingQSA.forEach(l => l.innerHTML = `<strong>${l.textContent}</strong>`)
-
-//<em> is italic </em>
-navLinksUsingQSA[2].innerHTML = "<em>Forms Lesson</em>";
+const formatDate = value => {
+	if (!value) return "Date unavailable"
+	const date = new Date(value)
+	return Number.isNaN(date.getTime())
+		? String(value)
+		: date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
+}
 
 /* 
 	? Creating New Elements Dynamically
@@ -126,7 +99,6 @@ console.log(toDoList);
 let input = document.querySelector(".input");
 // ? the input of input lives in the .value property (displayed in the browser console)
 let output = document.querySelector(".output");
-let nameOfPoster = document.querySelector(".nameOfPoster")
 
 // input.addEventListener("click", (evt) => {
 // 	console.log("The event triggered.")
@@ -150,8 +122,9 @@ let nameOfPoster = document.querySelector(".nameOfPoster")
 
 let params = new URLSearchParams(document.location.search)
 
-let loginBtn = document.querySelector(".auth-form > button");
-let logoutBtn = document.querySelector(".auth-form > button");
+let loginBtn = document.querySelector(".auth-form > button")
+let logoutBtn = document.querySelector(".auth-form > button")
+let newest = document.querySelector("#newest")
 
 // let fullName = params.get("fullName")
 // let email = params.get("email")
@@ -163,6 +136,8 @@ loginBtn.addEventListener("click", (evt) => {
 	console.log(evt.target.form[0].value, evt.target.form[1].value, evt.target.form[2].value)
 	console.log(evt.target.form)
 })
+
+newest.addEventListener("click", sortByNewest);
 
 let db = [
 	{ fullName: "Jackson Gwaltney", email: "jackson@gmail.com", password: "pass1234" },
@@ -295,36 +270,6 @@ toggle.addEventListener("click", evt => {
 
 // ----------------- End of DOM section -----------------
 
-// let currentPostId = 0;
-
-// /* So a post is an object? With different elements */
-
-// // createPost(username, content)
-// // likePost(postId)
-
-// let postFeed = []
-// let delayNumber = -1
-
-// function createPost(username, content)
-// {
-//     // let stamp = new Date().toISOString()
-
-//     let newPost = {
-        
-//         id: currentPostId,
-//         username: username,
-//         content: content,
-//         likes: 0,
-//         timestamp: Date.now()
-//         // timestamp: stamp
-//     }
-
-//     console.log(`This is creating post number ${newPost.id}`)
-//     postFeed.push(newPost)
-//     console.log("Just added:", postFeed[currentPostId]);
-//     currentPostId++;
-// }
-
 // function likePost(postId) {
 //     postFeed[postId].likes++;
 //     console.log(`You liked ${postFeed[postId].username}'s post.`)
@@ -335,6 +280,80 @@ function getFeed() {
     for (let i = 0; i < postFeed.length; i++) {
        console.log(postFeed[i]);
     }
+}
+
+const updateResults = () => {
+	const term = search.value.trim().toLowerCase()
+	const cards = [...document.querySelectorAll(".card")]
+	const visibleCards = cards.filter(card => {
+		const matches = !term || card.dataset.searchText.includes(term)
+		card.hidden = !matches
+		return matches
+	})
+
+	emptyResults.hidden = cards.length === 0 || visibleCards.length > 0
+	// resultCount.textContent = "Hello!"
+	resultCount.textContent = term
+		? `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} matching “${search.value.trim()}”.`
+		: `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} available.`
+}
+
+// Do I need this?
+const search = document.querySelector("#service-search")
+search.addEventListener("input", updateResults)
+search.form.addEventListener("reset", () => requestAnimationFrame(updateResults))
+//
+
+let addItem = () => {
+		const content = input.value.trim()
+		if (!content) return
+		createPost(currentUser || "Anonymous", content)
+		input.value = ""
+};
+
+addBtn.addEventListener("click", addItem);
+
+// Press 'Enter' to behave like the 'Add' button
+input.addEventListener("keydown", e => {
+	if (e.key === "Enter") {
+		addItem();
+	}
+});
+
+function renderPosts(posts) {
+	postList.replaceChildren()
+
+	posts.forEach(post => {
+		const card = document.createElement("article")
+		card.className = "card"
+		card.dataset.searchText = [post.id, post.username, post.content, post.timestamp]
+			.join(" ").toLowerCase()
+
+		const name = document.createElement("h3")
+		name.textContent = post.username
+
+		const contents = document.createElement("p")
+		contents.className = "contents"
+		contents.textContent = post.content || "No content."
+
+		const metadata = document.createElement("dl")
+		metadata.className = "card-meta"
+
+		const updatedLabel = document.createElement("dt")
+		updatedLabel.textContent = "Posted"
+
+		const updatedValue = document.createElement("dd")
+
+		const updatedTime = document.createElement("time")
+		updatedTime.dateTime = new Date(post.timestamp).toISOString()
+		updatedTime.textContent = formatDate(post.timestamp)
+
+		updatedValue.append(updatedTime)
+		metadata.append(updatedLabel, updatedValue)
+
+		card.append(name, contents, metadata)
+		postList.append(card)
+	})
 }
 
 function createPost(username, content)
@@ -356,180 +375,27 @@ function createPost(username, content)
     console.log("Just added:", postFeed[currentPostId]);
     currentPostId++;
 
-	postList.innerHTML = ""; // Prevents the previous post from duplicating
-
-	postFeed.forEach(post => {
-		const card = document.createElement("article")
-		card.className = "card"
-		card.dataset.searchText = [post.id, post.username, post.content, post.timestamp]
-			.join(" ").toLowerCase()
-
-		const name = document.createElement("h3")
-		name.textContent = post.username || "Unnamed service"
-
-		const contents = document.createElement("p")
-		contents.className = "contents"
-		contents.textContent = post.content || "No content."
-
-		const metadata = document.createElement("dl")
-		metadata.className = "card-meta"
-		const updatedLabel = document.createElement("dt")
-		updatedLabel.textContent = "Posted"
-		const updatedValue = document.createElement("dd")
-		const updatedTime = document.createElement("time")
-		updatedTime.dateTime = new Date(post.timestamp).toISOString()
-		updatedTime.textContent = formatDate(post.timestamp)
-		updatedValue.append(updatedTime)
-		metadata.append(updatedLabel, updatedValue)
-
-		card.append(name, content, metadata)
-		postList.append(card)
-	})
-
+	renderPosts(postFeed)
 }
 
-// const render = data => {
-// 	postList.replaceChildren()
-// 	const posts = Array.isArray(data) ? data : []
+function sortByNewest() { //Sort into order of timestamp
+	
+	console.log("\n--- Posts in descending order of timestamp ---")
+    console.log(postFeed)
+	console.dir("'Sort by Newest' button clicked.")
 
-// 	posts.forEach(service => {
-// 		const card = document.createElement("article")
-// 		card.className = "card"
-// 		card.dataset.searchText = [service.id, service.description, service.updatedAt]
-// 			.concat(service.recentIncidentBriefs?.map(issue => `${issue.impact} ${issue.name}`) || [])
-// 			.join(" ").toLowerCase()
+	let renderSortedPosts = renderPosts(postFeed.toSorted((a, b) => (b.timestamp - a.timestamp) || (b.id - a.id)))
 
-// 		const name = document.createElement("h3")
-// 		name.textContent = service.id || "Unnamed service"
-
-// 		const description = document.createElement("p")
-// 		description.className = "card-description"
-// 		description.textContent = service.description || "No description available."
-
-// 		const metadata = document.createElement("dl")
-// 		metadata.className = "card-meta"
-// 		const updatedLabel = document.createElement("dt")
-// 		updatedLabel.textContent = "Last updated"
-// 		const updatedValue = document.createElement("dd")
-// 		const updatedTime = document.createElement("time")
-// 		updatedTime.dateTime = service.updatedAt || ""
-// 		updatedTime.textContent = formatDate(service.updatedAt)
-// 		updatedValue.append(updatedTime)
-// 		metadata.append(updatedLabel, updatedValue)
-
-// 		card.append(name, description, metadata)
-
-// 		const incidents = Array.isArray(service.recentIncidentBriefs) ? service.recentIncidentBriefs : []
-// 		if (incidents.length) {
-// 			const incidentSection = document.createElement("section")
-// 			incidentSection.className = "incidents"
-// 			incidentSection.setAttribute("aria-label", "Recent incidents")
-// 			const incidentHeading = document.createElement("h4")
-// 			incidentHeading.className = "incidents-heading"
-// 			incidentHeading.textContent = "Recent incidents"
-// 			const incidentList = document.createElement("ul")
-// 			incidents.forEach(issue => {
-// 				const item = document.createElement("li")
-// 				item.textContent = `${issue.impact || "Unknown impact"}: ${issue.name || "Unnamed incident"}`
-// 				incidentList.append(item)
-// 			})
-// 			incidentSection.append(incidentHeading, incidentList)
-// 			card.append(incidentSection)
-// 		}
-// 		postList.append(card)
-// 	})
-
-// 	setStatus(posts.length ? "" : "No services are currently available.", !posts.length)
-// 	updateResults()
-// }
-
-const updateResults = () => {
-	const term = search.value.trim().toLowerCase()
-	const cards = [...document.querySelectorAll(".card")]
-	const visibleCards = cards.filter(card => {
-		const matches = !term || card.dataset.searchText.includes(term)
-		card.hidden = !matches
-		return matches
-	})
-
-	emptyResults.hidden = cards.length === 0 || visibleCards.length > 0
-	// resultCount.textContent = "Hello!"
-	resultCount.textContent = term
-		? `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} matching “${search.value.trim()}”.`
-		: `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} available.`
-}
-
-
-
-// const getData = async endpoint => {
-// 	try {
-// 		const response = await fetch(endpoint)
-// 		if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
-// 		const data = await response.json()
-// 		render(data.posts)
-// 	} catch (error) {
-// 		console.error(error)
-// 		postList.replaceChildren()
-// 		resultCount.textContent = "Services could not be loaded."
-// 		setStatus("We couldn't load service status right now. Please try again later.")
-// 	}
-// }
-
-// getData(postFeed[0])
-
-// ? This returns a Promise again
-// to use it, either use resolvers or throw inside another async function
-
-
-/* 
-	? Challenge
-	* parse thru the data and render it using DOM
-	* build blocks that display the following:
-		* name
-		* description
-		* updated date
-		* recent issues
-		! Spicey Mode
-		* add an input field
-		* as you type, the search removes all irrelevant blocks
-*/
-
-// Do I need this?
-const search = document.querySelector("#service-search")
-search.addEventListener("input", updateResults)
-search.form.addEventListener("reset", () => requestAnimationFrame(updateResults))
-//
-
-let addItem = () => {
-		const content = input.value.trim()
-		if (!content) return
-		createPost(currentUser || "Anonymous", content);
-		input.value = ""
-};
-
-addBtn.addEventListener("click", addItem);
-
-// Press 'Enter' to behave like the 'Add' button
-input.addEventListener("keydown", e => {
-	if (e.key === "Enter") {
-		addItem();
-	}
-});
-
-
-
-// function sortByNewest() { //Sort into order of timestamp
-//     // in some cases, 2 messages remain displayed in original order because they have the same timestamp,
-//     // this is an example of sort stability
-//     // but might I want it to default to sorting these two posts by ID if this happens?
-//     let sortedFeed = postFeed.toSorted((a, b) => (b.timestamp - a.timestamp) || (b.id - a.id))
-//     //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
-//     //I've done the same for the sortByLikes method too.
+	// in some cases, 2 messages remain displayed in original order because they have the same timestamp,
+    // this is an example of sort stability
+    // but might I want it to default to sorting these two posts by ID if this happens?
     
- 
-//     console.log("\n--- Posts in descending order of timestamp ---")
-//     console.log(sortedFeed);
-// }
+	// console.log(renderSortedPosts)
+
+    //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
+    //I've done the same for the sortByLikes method too.
+
+}	
 
 // function delay()
 // {
