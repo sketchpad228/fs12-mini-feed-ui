@@ -1,6 +1,15 @@
 // -- DOM section ---
 console.log("Script loaded.")
 
+let db = [
+	{ fullName: "Jackson Gwaltney", email: "jackson@gmail.com", password: "pass1234" },
+	{ fullName: "Paul Niemczyk", email: "paul@codecademy.com", password: "ilovepizza777" },
+	{ fullName: "Hamza H", email: "hamza@gmail.com", password: "alialiali" },
+	{ fullName: "Nader N", email: "nader@gmail.com", password: "laskjflk9834834" },
+	{ fullName: "Rachel P", email: "rachel@gmail.com", password: "superCool22" },
+	{ fullName: "Andrew Pike", email: "andrew@gmail.com", password: "pikeFIsH90" },
+];
+
 let currentPostId = 0;
 
 let postFeed = []
@@ -100,53 +109,22 @@ let input = document.querySelector(".input");
 // ? the input of input lives in the .value property (displayed in the browser console)
 let output = document.querySelector(".output");
 
-// input.addEventListener("click", (evt) => {
-// 	console.log("The event triggered.")
-// 	console.log(evt.target.value)
-// 	output.textContent = evt.target.value
-// })
-
-// input.addEventListener("keyup", (evt) => {
-// 	console.log("The event triggered.")
-// 	console.log(evt.target.value)
-// 	output.textContent = evt.target.value
-// })
-
-// addBtn.addEventListener("click", (e) => {
-// 		let li = document.createElement("li");
-// 		li.className = "todo-item";
-// 		li.textContent = input.value;
-// 		toDoList.appendChild(li);
-// 		input.value = "";
-// })
-
 let params = new URLSearchParams(document.location.search)
 
 let loginBtn = document.querySelector(".auth-form > button")
 let logoutBtn = document.querySelector(".auth-form > button")
-let newest = document.querySelector("#newest")
-
-// let fullName = params.get("fullName")
-// let email = params.get("email")
-// console.log(fullName, email)
+let byNewest = document.querySelector("#order-by-newest")
+let byLikes = document.querySelector("#order-by-likes")
 
 loginBtn.addEventListener("click", (evt) => {
 	// prevents default behaviour (submitting the form)
 	evt.preventDefault()
-	console.log(evt.target.form[0].value, evt.target.form[1].value, evt.target.form[2].value)
+	console.log(evt.target.form[0].value, evt.target.form[1].value)
 	console.log(evt.target.form)
 })
 
-newest.addEventListener("click", sortByNewest);
-
-let db = [
-	{ fullName: "Jackson Gwaltney", email: "jackson@gmail.com", password: "pass1234" },
-	{ fullName: "Paul Niemczyk", email: "paul@codecademy.com", password: "ilovepizza777" },
-	{ fullName: "Hamza H", email: "hamza@gmail.com", password: "alialiali" },
-	{ fullName: "Nader N", email: "nader@gmail.com", password: "laskjflk9834834" },
-	{ fullName: "Rachel P", email: "rachel@gmail.com", password: "superCool22" },
-	{ fullName: "Andrew Pike", email: "andrew@gmail.com", password: "pikeFIsH90" },
-];
+byNewest.addEventListener("click", sortByNewest);
+byLikes.addEventListener("click", sortByLikes);
 
 let addBtn = document.querySelector(".addBtn");
 console.dir(input, addBtn);
@@ -180,7 +158,7 @@ function login(evt) {
 
 	let email = validateEmail(evt.target.form[1].value);
 	let password = validatePassword(evt.target.form[2].value);
-	console.log(email, password);
+	console.log(email);
 	
 	if (!email && !password) {
 		return;
@@ -196,10 +174,6 @@ function login(evt) {
 	currentUser = user.fullName
 	output.textContent = `Logged in as ${user.fullName}`;
 
-	// for (let i = 0; i < postFeed.length; i++) {
-    // 	console.log(postFeed[i]);
-	// 	db.fullName = postFeed[i].username;
-    // }
 }
 
 function register(form) {
@@ -270,11 +244,6 @@ toggle.addEventListener("click", evt => {
 
 // ----------------- End of DOM section -----------------
 
-// function likePost(postId) {
-//     postFeed[postId].likes++;
-//     console.log(`You liked ${postFeed[postId].username}'s post.`)
-// }
-
 function getFeed() {
     console.log("\n--- Full Post Feed Output ---")
     for (let i = 0; i < postFeed.length; i++) {
@@ -305,10 +274,10 @@ search.form.addEventListener("reset", () => requestAnimationFrame(updateResults)
 //
 
 let addItem = () => {
-		const content = input.value.trim()
-		if (!content) return
-		createPost(currentUser || "Anonymous", content)
-		input.value = ""
+	const content = input.value.trim()
+	if (!content) return
+	createPost(currentUser || "Anonymous", content)
+	input.value = ""
 };
 
 addBtn.addEventListener("click", addItem);
@@ -319,6 +288,24 @@ input.addEventListener("keydown", e => {
 		addItem();
 	}
 });
+
+function createPost(username, content)
+{
+    let newPost = {
+        id: currentPostId,
+        username: username,
+        content: content,
+        likes: 0,
+        timestamp: Date.now()
+    }
+
+    console.log(`This is creating post number ${newPost.id}`)
+    postFeed.push(newPost)
+    console.log("Just added:", postFeed[currentPostId]);
+    currentPostId++;
+
+	renderPosts(postFeed)
+}
 
 function renderPosts(posts) {
 	postList.replaceChildren()
@@ -336,6 +323,16 @@ function renderPosts(posts) {
 		contents.className = "contents"
 		contents.textContent = post.content || "No content."
 
+		const likeButton = document.createElement("button")
+		likeButton.addEventListener("click", function likePost() {
+			postFeed[post.id].likes++;
+    		console.log(`You liked ${postFeed[post.id].username}'s post.`)
+			renderPosts(posts)	
+		})
+
+		const amountOfLikes = document.createElement("p")
+		amountOfLikes.textContent = post.likes
+
 		const metadata = document.createElement("dl")
 		metadata.className = "card-meta"
 
@@ -351,65 +348,46 @@ function renderPosts(posts) {
 		updatedValue.append(updatedTime)
 		metadata.append(updatedLabel, updatedValue)
 
-		card.append(name, contents, metadata)
+		card.append(name, contents, likeButton, amountOfLikes, metadata)
 		postList.append(card)
 	})
-}
-
-function createPost(username, content)
-{
-    let newPost = {
-        id: currentPostId,
-        username: username,
-        content: content,
-        likes: 0,
-        timestamp: Date.now()
-    }
-
+	console.log("\n--- Full Post Feed Output ---")
 	for (let i = 0; i < postFeed.length; i++) {
-		console.log(postFeed[i]);
+       console.log(postFeed[i]);
     }
-
-    console.log(`This is creating post number ${newPost.id}`)
-    postFeed.push(newPost)
-    console.log("Just added:", postFeed[currentPostId]);
-    currentPostId++;
-
-	renderPosts(postFeed)
 }
 
 function sortByNewest() { //Sort into order of timestamp
 	
 	console.log("\n--- Posts in descending order of timestamp ---")
-    console.log(postFeed)
+    // console.log(postFeed)
 	console.dir("'Sort by Newest' button clicked.")
 
-	let renderSortedPosts = renderPosts(postFeed.toSorted((a, b) => (b.timestamp - a.timestamp) || (b.id - a.id)))
+	const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.timestamp - a.timestamp) || (b.id - a.id)))
 
 	// in some cases, 2 messages remain displayed in original order because they have the same timestamp,
     // this is an example of sort stability
     // but might I want it to default to sorting these two posts by ID if this happens?
     
-	// console.log(renderSortedPosts)
+	// console.log(sortedFeed)
+
+    // for (let i = 0; i < sortedFeed.length; i++) {
+       console.log(sortedFeed);
+    // }
 
     //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
     //I've done the same for the sortByLikes method too.
 
 }	
 
-// function delay()
-// {
-
-// }
-
-// function sortByLikes() { //Sort into order of likes
-//     const sortedFeed = postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id))
-//     console.log("\n--- Posts in descending order of likes---")
-//     // for (let i = 0; i < postFeed.length; i++) {
-//     //    console.log(postFeed[i]);
-//     // }
-//     console.log(sortedFeed);
-// }
+function sortByLikes() { //Sort into order of likes
+    const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
+    console.log("\n--- Posts in descending order of likes---")
+    // for (let i = 0; i < sortedFeed.length; i++) {
+       console.log(sortedFeed);
+    // }
+    // console.log(sortedFeed);
+}
 
 // function getPostsByUser(username)
 // {
