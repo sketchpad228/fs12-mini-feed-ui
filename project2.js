@@ -372,7 +372,7 @@ function sortByNewest() { //Sort into order of timestamp
 	// console.log(sortedFeed)
 
     // for (let i = 0; i < sortedFeed.length; i++) {
-       console.log(sortedFeed);
+    console.log(sortedFeed);
     // }
 
     //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
@@ -384,7 +384,7 @@ function sortByLikes() { //Sort into order of likes
     const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
     console.log("\n--- Posts in descending order of likes---")
     // for (let i = 0; i < sortedFeed.length; i++) {
-       console.log(sortedFeed);
+    console.log(sortedFeed);
     // }
     // console.log(sortedFeed);
 }
@@ -395,6 +395,10 @@ function sortByLikes() { //Sort into order of likes
 //     for (let i = 0; i < postFeed.length; i++) {            
 //         if(postFeed[i].username == username)console.log(postFeed[i]);
 //     }
+// 	const usernameFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
+//     console.log("\n--- Posts in descending order of likes---")
+//     // for (let i = 0; i < sortedFeed.length; i++) {
+//     console.log(usernameFeed);
 // }
 
 // function delay()
