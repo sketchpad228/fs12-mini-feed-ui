@@ -115,6 +115,7 @@ let loginBtn = document.querySelector(".auth-form > button")
 let logoutBtn = document.querySelector(".auth-form > button")
 let byNewest = document.querySelector("#order-by-newest")
 let byLikes = document.querySelector("#order-by-likes")
+let postsByUsername = document.querySelector("#get-posts-by-username")
 
 loginBtn.addEventListener("click", (evt) => {
 	// prevents default behaviour (submitting the form)
@@ -125,6 +126,7 @@ loginBtn.addEventListener("click", (evt) => {
 
 byNewest.addEventListener("click", sortByNewest);
 byLikes.addEventListener("click", sortByLikes);
+postsByUsername.addEventListener("click", getPostsByUser);
 
 let addBtn = document.querySelector(".addBtn");
 console.dir(input, addBtn);
@@ -242,8 +244,6 @@ toggle.addEventListener("click", evt => {
 	evt.currentTarget.form[0].style.display = isRegistering ? "block" : "none";
 });
 
-// ----------------- End of DOM section -----------------
-
 function getFeed() {
     console.log("\n--- Full Post Feed Output ---")
     for (let i = 0; i < postFeed.length; i++) {
@@ -261,17 +261,19 @@ const updateResults = () => {
 	})
 
 	emptyResults.hidden = cards.length === 0 || visibleCards.length > 0
-	// resultCount.textContent = "Hello!"
 	resultCount.textContent = term
 		? `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} matching “${search.value.trim()}”.`
 		: `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} available.`
+
+	console.log("\n--- Full Post Feed Output ---")
+    for (let i = 0; i < postFeed.length; i++) {
+       console.log(postFeed[i]);
+    }
 }
 
-// Do I need this?
 const search = document.querySelector("#service-search")
 search.addEventListener("input", updateResults)
 search.form.addEventListener("reset", () => requestAnimationFrame(updateResults))
-//
 
 let addItem = () => {
 	const content = input.value.trim()
@@ -310,7 +312,13 @@ function createPost(username, content)
 function renderPosts(posts) {
 	postList.replaceChildren()
 
-	posts.forEach(post => {
+	console.log("Type of posts: ", typeof posts);
+	console.log("Is posts an array?", Array.isArray(posts));
+	console.log("Actual posts payload:", posts);
+
+	const postsArray = Array.isArray(posts) ? posts : Object.values(posts);
+
+	postsArray.forEach(post => {
 		const card = document.createElement("article")
 		card.className = "card"
 		card.dataset.searchText = [post.id, post.username, post.content, post.timestamp]
@@ -372,7 +380,7 @@ function sortByNewest() { //Sort into order of timestamp
 	// console.log(sortedFeed)
 
     // for (let i = 0; i < sortedFeed.length; i++) {
-    console.log(sortedFeed);
+       console.log(sortedFeed);
     // }
 
     //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
@@ -380,11 +388,12 @@ function sortByNewest() { //Sort into order of timestamp
 
 }	
 
-function sortByLikes() { //Sort into order of likes
+function sortByLikes() 
+{ //Sort into order of likes
     const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
     console.log("\n--- Posts in descending order of likes---")
     // for (let i = 0; i < sortedFeed.length; i++) {
-    console.log(sortedFeed);
+       console.log(sortedFeed);
     // }
     // console.log(sortedFeed);
 }
@@ -395,10 +404,6 @@ function sortByLikes() { //Sort into order of likes
 //     for (let i = 0; i < postFeed.length; i++) {            
 //         if(postFeed[i].username == username)console.log(postFeed[i]);
 //     }
-// 	const usernameFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
-//     console.log("\n--- Posts in descending order of likes---")
-//     // for (let i = 0; i < sortedFeed.length; i++) {
-//     console.log(usernameFeed);
 // }
 
 // function delay()
