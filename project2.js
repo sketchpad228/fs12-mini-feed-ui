@@ -376,12 +376,8 @@ function sortByNewest() { //Sort into order of timestamp
 	// in some cases, 2 messages remain displayed in original order because they have the same timestamp,
     // this is an example of sort stability
     // but might I want it to default to sorting these two posts by ID if this happens?
-    
-	// console.log(sortedFeed)
-
-    // for (let i = 0; i < sortedFeed.length; i++) {
+ 
        console.log(sortedFeed);
-    // }
 
     //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
     //I've done the same for the sortByLikes method too.
@@ -392,60 +388,15 @@ function sortByLikes()
 { //Sort into order of likes
     const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
     console.log("\n--- Posts in descending order of likes---")
-    // for (let i = 0; i < sortedFeed.length; i++) {
-       console.log(sortedFeed);
-    // }
-    // console.log(sortedFeed);
+    console.log(sortedFeed);
 }
 
-// function getPostsByUser(username)
-// {
-//     console.log(`\n--- Posts sent by ${username} ---`);
-//     for (let i = 0; i < postFeed.length; i++) {            
-//         if(postFeed[i].username == username)console.log(postFeed[i]);
-//     }
-// }
+function getPostsByUser()
+{
+    console.log(`\n--- Posts sent by ${currentUser} ---`);
 
-// function delay()
-// {
-//     console.log("Calling new post function...")
-// }
-
-// // --- Methods called ---
-
-// createPost("Homer", "D'oh!");
-// // getFeed(delayNumber);
-// likePost(0);
-// likePost(0);
-
-// createPost("Monty", "Excellent!");
-// // getFeed(delayNumber);
-// likePost(0);
-// likePost(1);
-
-// createPost("Bart", "Ay Carumba!");
-// // getFeed(delayNumber);
-// createPost("Lisa", "Splendid!");
-// // getFeed(delayNumber);
-// createPost("Maggie", "(suck)(suck)(suck)");
-// // getFeed(delayNumber);
-// createPost("Bart", "Do the Bartman!");
-// // getFeed(delayNumber);
-// createPost("Homér", "Le d'oh!");
-// // getFeed(delayNumber);
-// likePost(0);
-// likePost(1);
-// likePost(1);
-// likePost(1);
-// likePost(1);
-// likePost(1);
-// likePost(1);
-// likePost(1);
-// getFeed();
-// sortByNewest();
-// sortByLikes();
-// getFeed();
-// getPostsByUser("Homer")
-// getPostsByUser("Monty")
-// getPostsByUser("Bart")
-// getPostsByUser("Homér")
+	const userPosts = postFeed.filter(post => post.username === currentUser);
+   
+	userPosts.forEach(post => console.log(post));
+	renderPosts(userPosts);
+}
