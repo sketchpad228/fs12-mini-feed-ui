@@ -1,5 +1,4 @@
-// -- DOM section ---
-console.log("Script loaded.")
+console.log("Project - Mini Feed UI")
 
 let db = [
 	{ fullName: "Jackson Gwaltney", email: "jackson@gmail.com", password: "pass1234" },
@@ -14,29 +13,25 @@ let currentPostId = 0;
 
 let postFeed = []
 
-console.log("Project - Mini Feed UI")
-
 console.dir(document)
 
 console.log(window, navigation, navigator, history);
-
-// window.alert("Hello everyone")
 
 // ? Accessing elements
 console.dir(document.body.childNodes[1].textContent)
 
 // ? Access elements using DOM methods
 
-/* 
-	? getElementsByTagName
-*/
+// /* 
+// 	? getElementsByTagName
+// */
 
-let allAnchorTags = document.getElementsByTagName("a");
-console.log(allAnchorTags);
+// let allAnchorTags = document.getElementsByTagName("a");
+// console.log(allAnchorTags);
 
-// ? Affecting element by modifying its DOM properties
-//Change style of first nav link
-allAnchorTags[0].style.color = "black";
+// // ? Affecting element by modifying its DOM properties
+// //Change style of first nav link
+// allAnchorTags[0].style.color = "black";
 
 /* 
 	? getElementById()
@@ -104,7 +99,6 @@ for (i of nodeList) {
 	i.style.color = "blue";
 }
 
-console.log(toDoList);
 let input = document.querySelector(".input");
 // ? the input of input lives in the .value property (displayed in the browser console)
 let output = document.querySelector(".output");
@@ -116,6 +110,7 @@ let logoutBtn = document.querySelector(".auth-form > button")
 let byNewest = document.querySelector("#order-by-newest")
 let byLikes = document.querySelector("#order-by-likes")
 let postsByUsername = document.querySelector("#get-posts-by-username")
+let getFeedBtn = document.querySelector("#get-feed")
 
 loginBtn.addEventListener("click", (evt) => {
 	// prevents default behaviour (submitting the form)
@@ -127,7 +122,7 @@ loginBtn.addEventListener("click", (evt) => {
 byNewest.addEventListener("click", sortByNewest);
 byLikes.addEventListener("click", sortByLikes);
 postsByUsername.addEventListener("click", getPostsByUser);
-
+getFeedBtn.addEventListener("click", getFeed);
 let addBtn = document.querySelector(".addBtn");
 console.dir(input, addBtn);
 
@@ -244,14 +239,7 @@ toggle.addEventListener("click", evt => {
 	evt.currentTarget.form[0].style.display = isRegistering ? "block" : "none";
 });
 
-function getFeed() {
-    console.log("\n--- Full Post Feed Output ---")
-    for (let i = 0; i < postFeed.length; i++) {
-       console.log(postFeed[i]);
-    }
-}
-
-const updateResults = () => {
+const getFeed = () => {
 	const term = search.value.trim().toLowerCase()
 	const cards = [...document.querySelectorAll(".card")]
 	const visibleCards = cards.filter(card => {
@@ -270,10 +258,6 @@ const updateResults = () => {
        console.log(postFeed[i]);
     }
 }
-
-const search = document.querySelector("#service-search")
-search.addEventListener("input", updateResults)
-search.form.addEventListener("reset", () => requestAnimationFrame(updateResults))
 
 let addItem = () => {
 	const content = input.value.trim()
