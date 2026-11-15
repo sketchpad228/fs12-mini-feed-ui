@@ -122,7 +122,6 @@ loginBtn.addEventListener("click", (evt) => {
 byNewest.addEventListener("click", sortByNewest);
 byLikes.addEventListener("click", sortByLikes);
 postsByUsername.addEventListener("click", getPostsByUser);
-getFeedBtn.addEventListener("click", getFeed);
 let addBtn = document.querySelector(".addBtn");
 console.dir(input, addBtn);
 
@@ -239,26 +238,6 @@ toggle.addEventListener("click", evt => {
 	evt.currentTarget.form[0].style.display = isRegistering ? "block" : "none";
 });
 
-const getFeed = () => {
-	const term = search.value.trim().toLowerCase()
-	const cards = [...document.querySelectorAll(".card")]
-	const visibleCards = cards.filter(card => {
-		const matches = !term || card.dataset.searchText.includes(term)
-		card.hidden = !matches
-		return matches
-	})
-
-	emptyResults.hidden = cards.length === 0 || visibleCards.length > 0
-	resultCount.textContent = term
-		? `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} matching “${search.value.trim()}”.`
-		: `${visibleCards.length} ${visibleCards.length === 1 ? "service" : "services"} available.`
-
-	console.log("\n--- Full Post Feed Output ---")
-    for (let i = 0; i < postFeed.length; i++) {
-       console.log(postFeed[i]);
-    }
-}
-
 let addItem = () => {
 	const content = input.value.trim()
 	if (!content) return
@@ -290,10 +269,10 @@ function createPost(username, content)
     console.log("Just added:", postFeed[currentPostId]);
     currentPostId++;
 
-	renderPosts(postFeed)
+	getFeed(postFeed)
 }
 
-function renderPosts(posts) {
+function getFeed(posts) {
 	postList.replaceChildren()
 
 	console.log("Type of posts: ", typeof posts);
@@ -319,7 +298,7 @@ function renderPosts(posts) {
 		likeButton.addEventListener("click", function likePost() {
 			postFeed[post.id].likes++;
     		console.log(`You liked ${postFeed[post.id].username}'s post.`)
-			renderPosts(posts)	
+			getFeed(posts)	
 		})
 
 		const amountOfLikes = document.createElement("p")
@@ -355,7 +334,7 @@ function sortByNewest() { //Sort into order of timestamp
     // console.log(postFeed)
 	console.dir("'Sort by Newest' button clicked.")
 
-	const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.timestamp - a.timestamp) || (b.id - a.id)))
+	const sortedFeed = getFeed(postFeed.toSorted((a, b) => (b.timestamp - a.timestamp) || (b.id - a.id)))
 
 	// in some cases, 2 messages remain displayed in original order because they have the same timestamp,
     // this is an example of sort stability
@@ -366,11 +345,11 @@ function sortByNewest() { //Sort into order of timestamp
     //I've added the OR operator (||) so it defaults to sorting by ID when this happens.
     //I've done the same for the sortByLikes method too.
 
-}	
+}
 
 function sortByLikes() 
 { //Sort into order of likes
-    const sortedFeed = renderPosts(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
+    const sortedFeed = getFeed(postFeed.toSorted((a, b) => (b.likes - a.likes) || (b.id - a.id)))
     console.log("\n--- Posts in descending order of likes---")
     console.log(sortedFeed);
 }
@@ -382,5 +361,5 @@ function getPostsByUser()
 	const userPosts = postFeed.filter(post => post.username === currentUser);
    
 	userPosts.forEach(post => console.log(post));
-	renderPosts(userPosts);
+	getFeed(userPosts);
 }
