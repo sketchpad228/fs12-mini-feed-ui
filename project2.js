@@ -295,6 +295,7 @@ function getFeed(posts) {
 		contents.textContent = post.content || "No content."
 
 		const likeButton = document.createElement("button")
+		likeButton.id = "like-button"
 		likeButton.addEventListener("click", function likePost() {
 			postFeed[post.id].likes++;
     		console.log(`You liked ${postFeed[post.id].username}'s post.`)
