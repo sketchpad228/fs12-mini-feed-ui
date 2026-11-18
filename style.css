@@ -4,7 +4,7 @@
 }
 
 :root {
-	color: whitesmoke;
+	color: #1f2937;
 	/* background: #f4f7fb; */
 	font-family: Century;
 	line-height: 1.5;
@@ -307,4 +307,10 @@ button:focus-visible {
 		animation-duration: .01ms !important;
 		animation-iteration-count: 1 !important;
 	}
+}
+
+#footer-container {
+	padding: 1rem;
+	background-color: #1f2937;
+	color: whitesmoke;
 }
