@@ -4,7 +4,7 @@
 }
 
 :root {
-	color: white;
+	color: whitesmoke;
 	/* background: #f4f7fb; */
 	font-family: Century;
 	line-height: 1.5;
@@ -19,7 +19,7 @@ p {
 
 h1 {
 	margin-bottom: .5rem;
-	color: #172554;
+	color: whitesmoke;
 	font-size: clamp(2rem, 5vw, 3rem);
 	line-height: 1.1;
 }
